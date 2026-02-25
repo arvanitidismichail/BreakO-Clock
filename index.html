@@ -122,7 +122,7 @@
     const AREA_LABELS = { all: "Όλες", neck: "Αυχένας", back: "Μέση" };
 
     // ─── TIMER RING ───
-    function TimerRing({ progress, timeLeft, totalTime, isRunning, color, size = 200 }) {
+    function TimerRing({ progress, timeLeft, totalTime, isRunning, color, size = 200, ringBg = "#141420", textColor = "#f1f5f9" }) {
       const radius = (size - 16) / 2;
       const circumference = 2 * Math.PI * radius;
       const offset = circumference * (1 - progress);
@@ -132,11 +132,11 @@
       return (
         <div style={{ position: "relative", width: size, height: size, margin: "0 auto" }}>
           <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#141420" strokeWidth="6" />
+            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={ringBg} strokeWidth="6" />
             <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} style={{ transition: "stroke-dashoffset 1s linear", filter: `drop-shadow(0 0 8px ${color}40)` }} />
           </svg>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ fontSize: size > 150 ? 42 : 28, fontWeight: 800, color: "#f1f5f9", fontFamily: "monospace", letterSpacing: -2 }}>
+            <div style={{ fontSize: size > 150 ? 42 : 28, fontWeight: 800, color: textColor, fontFamily: "monospace", letterSpacing: -2 }}>
               {minutes}:{seconds.toString().padStart(2, "0")}
             </div>
           </div>
@@ -147,6 +147,9 @@
     // ─── MAIN APP ───
     function BreakFlow() {
       const [screen, setScreen] = useState("home"); 
+      
+      // Theme State
+      const [darkMode, setDarkMode] = useStickyState(true, "bf-theme-v2");
       
       // Setup State
       const [workMinutes, setWorkMinutes] = useState(30);
@@ -322,8 +325,46 @@
       const accentDark = "#1d4ed8";
       const isCustomTime = ![20, 30, 45, 60].includes(workMinutes);
 
+      // Theme colors
+      const T = darkMode ? {
+        bg: "#08080f",
+        cardBg: "#0c0c18",
+        cardBorder: "#1a1a28",
+        cardBgAlt: "#0a0a14",
+        inputBg: "#141420",
+        text: "#c9d1d9",
+        textBright: "#f1f5f9",
+        textMuted: "#9ca3af",
+        textDim: "#6b7280",
+        textFaint: "#4b5563",
+        ring: "#141420",
+        navBg: "#08080f",
+        imageBg: "#141420",
+        doneBg: "#22c55e10",
+      } : {
+        bg: "#f0f2f5",
+        cardBg: "#ffffff",
+        cardBorder: "#d1d5db",
+        cardBgAlt: "#f9fafb",
+        inputBg: "#e5e7eb",
+        text: "#374151",
+        textBright: "#111827",
+        textMuted: "#4b5563",
+        textDim: "#6b7280",
+        textFaint: "#9ca3af",
+        ring: "#e5e7eb",
+        navBg: "#f0f2f5",
+        imageBg: "#e5e7eb",
+        doneBg: "#22c55e18",
+      };
+
+      // Apply body background
+      useEffect(() => {
+        document.body.style.background = T.bg;
+      }, [darkMode]);
+
       return (
-        <div className="app-container">
+        <div className="app-container" style={{ color: T.text }}>
           <style>{` 
             button { font-family: inherit; } 
             input[type=number]::-webkit-inner-spin-button, 
@@ -352,8 +393,6 @@
               width: 100%;
               max-width: 480px;
               padding: 12px;
-              background: #08080f;
-              border-top: 1px solid #14141f;
               display: flex;
               justify-content: center;
               gap: 12px;
@@ -419,21 +458,33 @@
           {/* ═══ HOME SCREEN (SETUP) ═══ */}
           {screen === "home" && (
             <div style={{ padding: "40px 24px" }}>
+              {/* Theme toggle */}
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+                <button onClick={() => setDarkMode(!darkMode)} style={{
+                  width: 44, height: 44, borderRadius: 12, border: `1px solid ${T.cardBorder}`,
+                  backgroundColor: T.cardBg, color: T.textDim,
+                  fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "all 0.3s",
+                }} title={darkMode ? "Φωτεινό θέμα" : "Σκοτεινό θέμα"}>
+                  {darkMode ? "☀️" : "🌙"}
+                </button>
+              </div>
+
               <div style={{ textAlign: "center", marginBottom: 32 }}>
                 <img src="./logo-WP-Social-OnlyIcon.jpg" alt="Workplace Physiocare Logo" style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 12px", display: "block", boxShadow: `0 8px 32px ${accent}40`, objectFit: "cover" }} />
-                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Workplace Physiocare</h1>
-                <p style={{ fontSize: 14, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>Your Health Partner at Work</p>
+                <h1 style={{ fontSize: 28, fontWeight: 800, color: T.textBright, margin: "0 0 4px" }}>Workplace Physiocare</h1>
+                <p style={{ fontSize: 14, color: T.textMuted, margin: 0, fontStyle: "italic" }}>Your Health Partner at Work</p>
               </div>
 
               {/* Q1: TIMER SELECTOR */}
-              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Κάθε πόσα λεπτά θέλετε να κάνετε διάλειμμα;</div>
+              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: T.cardBg, borderRadius: "16px", border: `1px solid ${T.cardBorder}` }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: T.textBright, marginBottom: 12, textAlign: "center" }}>Κάθε πόσα λεπτά θέλετε να κάνετε διάλειμμα;</div>
                 <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
                   {[20, 30, 45, 60].map(min => (
                     <button key={min} onClick={() => setWorkMinutes(min)} style={{
-                      width: 52, height: 52, borderRadius: 12, border: `2px solid ${workMinutes === min ? accent : "#1a1a28"}`,
-                      backgroundColor: workMinutes === min ? `${accent}15` : "#141420",
-                      color: workMinutes === min ? accent : "#9ca3af",
+                      width: 52, height: 52, borderRadius: 12, border: `2px solid ${workMinutes === min ? accent : T.cardBorder}`,
+                      backgroundColor: workMinutes === min ? `${accent}15` : T.inputBg,
+                      color: workMinutes === min ? accent : T.textMuted,
                       fontSize: 16, fontWeight: 800, cursor: "pointer", transition: "all 0.2s"
                     }}>{min}</button>
                   ))}
@@ -446,9 +497,9 @@
                     }}
                     style={{
                       width: 60, height: 52, borderRadius: 12, 
-                      border: `2px solid ${isCustomTime ? accent : "#1a1a28"}`,
-                      backgroundColor: isCustomTime ? `${accent}15` : "#141420",
-                      color: isCustomTime ? accent : "#9ca3af",
+                      border: `2px solid ${isCustomTime ? accent : T.cardBorder}`,
+                      backgroundColor: isCustomTime ? `${accent}15` : T.inputBg,
+                      color: isCustomTime ? accent : T.textMuted,
                       fontSize: 14, fontWeight: 800, textAlign: "center", outline: "none"
                     }}
                   />
@@ -456,24 +507,24 @@
               </div>
 
               {/* Q2: PAIN PRESENCE */}
-              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Αισθάνεστε κάποιον πόνο;</div>
+              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: T.cardBg, borderRadius: "16px", border: `1px solid ${T.cardBorder}` }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: T.textBright, marginBottom: 12, textAlign: "center" }}>Αισθάνεστε κάποιον πόνο;</div>
                 <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-                  <button onClick={() => setHasPain(true)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === true ? accent : "#1a1a28"}`, backgroundColor: hasPain === true ? `${accent}15` : "#141420", color: hasPain === true ? accent : "#9ca3af", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Ναι</button>
-                  <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : "#1a1a28"}`, backgroundColor: hasPain === false ? `${accent}15` : "#141420", color: hasPain === false ? accent : "#9ca3af", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
+                  <button onClick={() => setHasPain(true)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === true ? accent : T.cardBorder}`, backgroundColor: hasPain === true ? `${accent}15` : T.inputBg, color: hasPain === true ? accent : T.textMuted, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Ναι</button>
+                  <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : T.cardBorder}`, backgroundColor: hasPain === false ? `${accent}15` : T.inputBg, color: hasPain === false ? accent : T.textMuted, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
                 </div>
 
-                {/* Q3: PAIN LOCATION (Conditional with Images!) */}
+                {/* Q3: PAIN LOCATION */}
                 {hasPain && (
-                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28" }}>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 16, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
+                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${T.cardBorder}` }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: T.textBright, marginBottom: 16, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
                     <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                       
                       {/* Neck Selection Card */}
                       <button className="pain-card" onClick={() => setPainLocation('neck')} style={{ 
-                        border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, 
-                        backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", 
-                        color: painLocation === 'neck' ? accent : "#9ca3af", 
+                        border: `2px solid ${painLocation === 'neck' ? accent : T.cardBorder}`, 
+                        backgroundColor: painLocation === 'neck' ? `${accent}15` : T.inputBg, 
+                        color: painLocation === 'neck' ? accent : T.textMuted, 
                       }}>
                         <img className="pain-icon" src="./officeFemale.png" alt="Πόνος στον Αυχένα" />
                         <span>Αυχένας</span>
@@ -481,9 +532,9 @@
 
                       {/* Back Selection Card */}
                       <button className="pain-card" onClick={() => setPainLocation('back')} style={{ 
-                        border: `2px solid ${painLocation === 'back' ? accent : "#1a1a28"}`, 
-                        backgroundColor: painLocation === 'back' ? `${accent}15` : "#141420", 
-                        color: painLocation === 'back' ? accent : "#9ca3af", 
+                        border: `2px solid ${painLocation === 'back' ? accent : T.cardBorder}`, 
+                        backgroundColor: painLocation === 'back' ? `${accent}15` : T.inputBg, 
+                        color: painLocation === 'back' ? accent : T.textMuted, 
                       }}>
                         <img className="pain-icon" src="./officeMale.png" alt="Πόνος στη Μέση" />
                         <span>Μέση</span>
@@ -497,15 +548,15 @@
               <button 
                 onClick={startWork} 
                 disabled={hasPain && painLocation === null}
-                style={{ width: "100%", padding: "16px", borderRadius: 14, border: "none", background: (hasPain && painLocation === null) ? "#1a1a28" : `linear-gradient(135deg, ${accent}, ${accentDark})`, color: (hasPain && painLocation === null) ? "#4b5563" : "#fff", fontSize: 16, fontWeight: 800, cursor: (hasPain && painLocation === null) ? "not-allowed" : "pointer", opacity: (hasPain && painLocation === null) ? 0.7 : 1 }}
+                style={{ width: "100%", padding: "16px", borderRadius: 14, border: "none", background: (hasPain && painLocation === null) ? T.inputBg : `linear-gradient(135deg, ${accent}, ${accentDark})`, color: (hasPain && painLocation === null) ? T.textFaint : "#fff", fontSize: 16, fontWeight: 800, cursor: (hasPain && painLocation === null) ? "not-allowed" : "pointer", opacity: (hasPain && painLocation === null) ? 0.7 : 1 }}
               >
                 Έναρξη Εργασίας
               </button>
 
               {/* ─── DISCLAIMER ─── */}
-              <div style={{ marginTop: 24, padding: "12px 14px", borderRadius: 10, backgroundColor: "#0c0c18", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 11, color: "#4b5563", lineHeight: 1.7, textAlign: "center" }}>
-                  <span style={{ color: "#6b7280", fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα και συμβουλευτείτε τον γιατρό ή φυσιοθεραπευτή σας. Η χρήση της εφαρμογής γίνεται με δική σας ευθύνη.
+              <div style={{ marginTop: 24, padding: "12px 14px", borderRadius: 10, backgroundColor: T.cardBg, border: `1px solid ${T.cardBorder}` }}>
+                <div style={{ fontSize: 11, color: T.textFaint, lineHeight: 1.7, textAlign: "center" }}>
+                  <span style={{ color: T.textDim, fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα και συμβουλευτείτε τον γιατρό ή φυσιοθεραπευτή σας. Η χρήση της εφαρμογής γίνεται με δική σας ευθύνη.
                 </div>
               </div>
             </div>
@@ -514,13 +565,13 @@
           {/* ═══ WORKING SCREEN ═══ */}
           {screen === "working" && (
             <div style={{ padding: "32px 24px", textAlign: "center" }}>
-              <div style={{ fontSize: 15, color: "#6b7280", marginBottom: 24 }}>Μπορείτε να ελαχιστοποιήσετε το παράθυρο. Θα σας ειδοποιήσουμε.</div>
+              <div style={{ fontSize: 15, color: T.textDim, marginBottom: 24 }}>Μπορείτε να ελαχιστοποιήσετε το παράθυρο. Θα σας ειδοποιήσουμε.</div>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
-                <TimerRing progress={1 - (timeLeft / (workMinutes * 60))} timeLeft={timeLeft} totalTime={workMinutes * 60} isRunning={isRunning} color={accent} size={220} />
+                <TimerRing progress={1 - (timeLeft / (workMinutes * 60))} timeLeft={timeLeft} totalTime={workMinutes * 60} isRunning={isRunning} color={accent} size={220} ringBg={T.ring} textColor={T.textBright} />
               </div>
               <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                 <button onClick={() => setIsRunning(!isRunning)} style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: `${accent}15`, color: accent, fontSize: 20, border: "none", cursor: "pointer" }}>{isRunning ? "⏸" : "▶"}</button>
-                <button onClick={() => { setScreen("home"); setIsRunning(false); }} style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: "#0c0c18", color: "#4b5563", border: "1px solid #1a1a28", cursor: "pointer" }}>✕</button>
+                <button onClick={() => { setScreen("home"); setIsRunning(false); }} style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: T.cardBg, color: T.textFaint, border: `1px solid ${T.cardBorder}`, cursor: "pointer" }}>✕</button>
               </div>
             </div>
           )}
@@ -530,21 +581,21 @@
             <div style={{ padding: "24px" }}>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 26, fontWeight: 800, color: accent, margin: "0 0 4px" }}>Ώρα για Διάλειμμα!</h2>
-                <p style={{ fontSize: 14, color: "#9ca3af", margin: "0 0 12px" }}>Κάντε τις παρακάτω ασκήσεις με τον δικό σας ρυθμό.</p>
+                <p style={{ fontSize: 14, color: T.textMuted, margin: "0 0 12px" }}>Κάντε τις παρακάτω ασκήσεις με τον δικό σας ρυθμό.</p>
                 
                 {/* Break duration timer */}
                 <div style={{ 
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "8px 16px", borderRadius: 20, 
-                  backgroundColor: breakReminder ? "#f59e0b15" : "#141420",
-                  border: `1px solid ${breakReminder ? "#f59e0b40" : "#1a1a28"}`,
+                  backgroundColor: breakReminder ? "#f59e0b15" : T.inputBg,
+                  border: `1px solid ${breakReminder ? "#f59e0b40" : T.cardBorder}`,
                   animation: breakReminder ? "pulseReminder 1.5s ease-in-out infinite" : "none",
                   transition: "all 0.3s"
                 }}>
                   <span style={{ fontSize: 14 }}>{breakReminder ? "⚠️" : "⏱️"}</span>
                   <span style={{ 
                     fontSize: 16, fontWeight: 800, fontFamily: "monospace",
-                    color: breakReminder ? "#f59e0b" : "#9ca3af"
+                    color: breakReminder ? "#f59e0b" : T.textMuted
                   }}>
                     {formatBreakTime(breakElapsed)}
                   </span>
@@ -559,23 +610,23 @@
               {activeBreakExercises.map((ex) => {
                 const isDone = completedToday.includes(ex.id);
                 return (
-                  <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isDone ? "#0a0a14" : "#0c0c18", border: `1px solid ${isDone ? "#22c55e40" : "#1a1a28"}`, transition: "all 0.3s" }}>
+                  <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isDone ? T.cardBgAlt : T.cardBg, border: `1px solid ${isDone ? "#22c55e40" : T.cardBorder}`, transition: "all 0.3s" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                      <div style={{ fontSize: 17, fontWeight: 800, color: isDone ? "#6b7280" : "#e2e8f0" }}>{ex.name}</div>
-                      <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: isDone ? T.textDim : T.textBright }}>{ex.name}</div>
+                      <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 4, backgroundColor: T.inputBg, color: T.textMuted }}>{ex.reps}</span>
                     </div>
                     
-                    <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${isDone ? "#1a1a28" : accent + "40"}`, opacity: isDone ? 0.5 : 1 }} />
-                    <div style={{ fontSize: 14, color: isDone ? "#4b5563" : "#9ca3af", lineHeight: 1.6, marginBottom: "12px" }}>{ex.instruction}</div>
+                    <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${isDone ? T.cardBorder : accent + "40"}`, opacity: isDone ? 0.5 : 1, backgroundColor: T.imageBg }} />
+                    <div style={{ fontSize: 14, color: isDone ? T.textFaint : T.textMuted, lineHeight: 1.6, marginBottom: "12px" }}>{ex.instruction}</div>
                     
                     {isDone ? (
-                      <div style={{ fontSize: 13, color: "#22c55e", fontWeight: 700, textAlign: "center", padding: "8px", backgroundColor: "#22c55e10", borderRadius: "8px" }}>✓ Ολοκληρώθηκε</div>
+                      <div style={{ fontSize: 13, color: "#22c55e", fontWeight: 700, textAlign: "center", padding: "8px", backgroundColor: T.doneBg, borderRadius: "8px" }}>✓ Ολοκληρώθηκε</div>
                     ) : (
                       <div style={{ display: "flex", gap: 8 }}>
                         <button onClick={() => markExerciseDone(ex.id)} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", backgroundColor: `${accent}20`, color: accent, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
                           ✓ Ολοκλήρωση
                         </button>
-                        <button onClick={() => skipExercise(ex.id)} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #1a1a28", backgroundColor: "#141420", color: "#6b7280", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                        <button onClick={() => skipExercise(ex.id)} style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${T.cardBorder}`, backgroundColor: T.inputBg, color: T.textDim, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                           Παράλειψη ↷
                         </button>
                       </div>
@@ -594,7 +645,7 @@
             <div style={{ padding: "20px", paddingBottom: "100px" }}>
               <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                 <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: accent, cursor: "pointer", fontSize: 20, padding: 0, marginRight: 12 }}>←</button>
-                <h2 style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", margin: 0 }}>Βιβλιοθήκη Ασκήσεων</h2>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: T.textBright, margin: 0 }}>Βιβλιοθήκη Ασκήσεων</h2>
               </div>
               
               {/* BODY AREA FILTERS */}
@@ -602,28 +653,28 @@
                 {Object.entries(AREA_LABELS).map(([key, label]) => (
                   <button key={key} onClick={() => setActiveFilter(key)} style={{
                     padding: "8px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", border: "none", cursor: "pointer",
-                    backgroundColor: activeFilter === key ? accent : "#141420", color: activeFilter === key ? "#fff" : "#9ca3af"
+                    backgroundColor: activeFilter === key ? accent : T.inputBg, color: activeFilter === key ? "#fff" : T.textMuted
                   }}>{label}</button>
                 ))}
               </div>
               
               {displayedLibraryExercises.map((ex) => (
-                <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 16, backgroundColor: "#0c0c18", border: "1px solid #14141f" }}>
+                <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 16, backgroundColor: T.cardBg, border: `1px solid ${T.cardBorder}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                    <div style={{ fontSize: 17, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
-                    <span style={{ fontSize: 12, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: T.textBright }}>{ex.name}</div>
+                    <span style={{ fontSize: 12, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: T.inputBg, color: T.textMuted }}>{ex.reps}</span>
                   </div>
                   
-                  <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${accent}40` }} />
-                  <div style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.6, marginBottom: 8 }}>{ex.instruction}</div>
-                  <div style={{ fontSize: 12, color: "#6b7280", fontStyle: "italic" }}>{ex.evidence}</div>
+                  <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${accent}40`, backgroundColor: T.imageBg }} />
+                  <div style={{ fontSize: 14, color: T.textMuted, lineHeight: 1.6, marginBottom: 8 }}>{ex.instruction}</div>
+                  <div style={{ fontSize: 12, color: T.textDim, fontStyle: "italic" }}>{ex.evidence}</div>
                 </div>
               ))}
 
               {/* ─── DISCLAIMER (Library screen) ─── */}
-              <div style={{ marginTop: 8, padding: "12px 14px", borderRadius: 10, backgroundColor: "#0c0c18", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 11, color: "#4b5563", lineHeight: 1.7, textAlign: "center" }}>
-                  <span style={{ color: "#6b7280", fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα.
+              <div style={{ marginTop: 8, padding: "12px 14px", borderRadius: 10, backgroundColor: T.cardBg, border: `1px solid ${T.cardBorder}` }}>
+                <div style={{ fontSize: 11, color: T.textFaint, lineHeight: 1.7, textAlign: "center" }}>
+                  <span style={{ color: T.textDim, fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα.
                 </div>
               </div>
             </div>
@@ -631,9 +682,9 @@
 
           {/* ═══ BOTTOM NAV ═══ */}
           {(screen === "home" || screen === "exercises") && (
-            <div className="bottom-nav">
-              <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
-              <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>💪🏻 Ασκήσεις</button>
+            <div className="bottom-nav" style={{ background: T.navBg, borderTop: `1px solid ${T.cardBorder}` }}>
+              <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : T.textFaint, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
+              <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : T.textFaint, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>📖 Ασκήσεις</button>
             </div>
           )}
         </div>
