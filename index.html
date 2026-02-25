@@ -17,11 +17,17 @@
     // ─── LOCAL STORAGE HOOK ───
     function useStickyState(defaultValue, key) {
       const [value, setValue] = useState(() => {
-        const stickyValue = window.localStorage.getItem(key);
-        return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
+        try {
+          const stickyValue = window.localStorage.getItem(key);
+          return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
+        } catch (e) {
+          return defaultValue;
+        }
       });
       useEffect(() => {
-        window.localStorage.setItem(key, JSON.stringify(value));
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {}
       }, [key, value]);
       return [value, setValue];
     }
@@ -155,6 +161,11 @@
       const [activeBreakExercises, setActiveBreakExercises] = useState([]);
       const [activeFilter, setActiveFilter] = useState("all");
 
+      // Break duration timer
+      const [breakStartTime, setBreakStartTime] = useState(null);
+      const [breakElapsed, setBreakElapsed] = useState(0);
+      const [breakReminder, setBreakReminder] = useState(false);
+
       const todayDateString = new Date().toDateString();
       const [savedDate, setSavedDate] = useStickyState(todayDateString, "bf-date-v2");
       const [completedToday, setCompletedToday] = useStickyState([], "bf-completed-v2");
@@ -166,34 +177,59 @@
         }
       }, [todayDateString, savedDate]);
 
-      // Sound
+      // Sound - robust multi-tone chime
       const playChime = useCallback(() => {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain); gain.connect(ctx.destination);
-          osc.type = "sine"; 
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); 
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.2); 
-          gain.gain.setValueAtTime(0, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-          osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 1.5);
+          
+          // First tone
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.connect(gain1); gain1.connect(ctx.destination);
+          osc1.type = "sine";
+          osc1.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+          gain1.gain.setValueAtTime(0, ctx.currentTime);
+          gain1.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.05);
+          gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+          osc1.start(ctx.currentTime); osc1.stop(ctx.currentTime + 0.8);
+
+          // Second tone (higher, delayed)
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.connect(gain2); gain2.connect(ctx.destination);
+          osc2.type = "sine";
+          osc2.frequency.setValueAtTime(659.25, ctx.currentTime + 0.3); // E5
+          gain2.gain.setValueAtTime(0, ctx.currentTime);
+          gain2.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.35);
+          gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+          osc2.start(ctx.currentTime + 0.3); osc2.stop(ctx.currentTime + 1.2);
+
+          // Third tone (highest, more delayed)
+          const osc3 = ctx.createOscillator();
+          const gain3 = ctx.createGain();
+          osc3.connect(gain3); gain3.connect(ctx.destination);
+          osc3.type = "sine";
+          osc3.frequency.setValueAtTime(783.99, ctx.currentTime + 0.6); // G5
+          gain3.gain.setValueAtTime(0, ctx.currentTime);
+          gain3.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.65);
+          gain3.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
+          osc3.start(ctx.currentTime + 0.6); osc3.stop(ctx.currentTime + 1.8);
         } catch (e) {
             console.log("Audio not supported or blocked");
         }
       }, []);
 
       // Desktop Notification Function
-      const triggerNotification = () => {
-        if (Notification.permission === 'granted') {
-          new Notification('Ώρα για Διάλειμμα!', {
-            body: 'Ο χρόνος εργασίας τελείωσε. Κάντε τις ασκήσεις σας.',
-            icon: './logo-WP-Social-OnlyIcon.jpg'
-          });
-        }
-      };
+      const triggerNotification = useCallback((title, body) => {
+        try {
+          if (Notification.permission === 'granted') {
+            new Notification(title || 'Ώρα για Διάλειμμα!', {
+              body: body || 'Ο χρόνος εργασίας τελείωσε. Κάντε τις ασκήσεις σας.',
+              icon: './logo-WP-Social-OnlyIcon.jpg'
+            });
+          }
+        } catch(e) {}
+      }, []);
 
       // Work Timer Logic
       useEffect(() => {
@@ -211,6 +247,9 @@
             chosenExercises = [...EXERCISES].sort(() => 0.5 - Math.random()).slice(0, 5);
           }
           setActiveBreakExercises(chosenExercises);
+          setBreakStartTime(Date.now());
+          setBreakElapsed(0);
+          setBreakReminder(false);
           setScreen("break"); 
           setIsRunning(false);
           return;
@@ -218,6 +257,22 @@
         const t = setTimeout(() => setTimeLeft(tl => tl - 1), 1000);
         return () => clearTimeout(t);
       }, [isRunning, timeLeft, screen, hasPain, painLocation]);
+
+      // Break duration timer
+      useEffect(() => {
+        if (screen !== "break" || !breakStartTime) return;
+        const t = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - breakStartTime) / 1000);
+          setBreakElapsed(elapsed);
+          // 5 minute reminder
+          if (elapsed >= 300 && !breakReminder) {
+            setBreakReminder(true);
+            playChime();
+            triggerNotification('Υπενθύμιση Διαλείμματος', 'Πέρασαν 5 λεπτά. Ώρα να επιστρέψετε στην εργασία!');
+          }
+        }, 1000);
+        return () => clearInterval(t);
+      }, [screen, breakStartTime, breakReminder]);
 
       const startWork = () => { 
         if (typeof Notification !== "undefined" && Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -229,7 +284,10 @@
       };
 
       const finishBreak = () => { 
-        setTotalBreaksToday(b => b + 1); 
+        setTotalBreaksToday(b => b + 1);
+        setBreakStartTime(null);
+        setBreakElapsed(0);
+        setBreakReminder(false);
         startWork(); 
       };
 
@@ -237,6 +295,26 @@
         if (!completedToday.includes(id)) {
           setCompletedToday(prev => [...prev, id]);
         }
+      };
+
+      const skipExercise = (id) => {
+        setActiveBreakExercises(prev => {
+          const updated = prev.filter(ex => ex.id !== id);
+          // Pick a replacement from exercises not already in the break list
+          const currentIds = updated.map(ex => ex.id);
+          const available = EXERCISES.filter(ex => !currentIds.includes(ex.id) && ex.id !== id);
+          if (available.length > 0) {
+            const replacement = available[Math.floor(Math.random() * available.length)];
+            updated.push(replacement);
+          }
+          return updated;
+        });
+      };
+
+      const formatBreakTime = (secs) => {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m}:${s.toString().padStart(2, "0")}`;
       };
 
       const displayedLibraryExercises = activeFilter === "all" ? EXERCISES : EXERCISES.filter(ex => ex.bodyArea === activeFilter);
@@ -250,6 +328,10 @@
             button { font-family: inherit; } 
             input[type=number]::-webkit-inner-spin-button, 
             input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+            @keyframes pulseReminder {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.6; }
+            }
             
             /* Mobile First Styles */
             .app-container {
@@ -260,6 +342,7 @@
               margin: 0 auto;
               padding-bottom: 80px;
               position: relative;
+              font-size: 15px;
             }
             .bottom-nav {
               position: fixed;
@@ -278,7 +361,7 @@
             }
             .exercise-image {
               width: 100%;
-              height: 200px;
+              height: 220px;
               object-fit: contain;
               border-radius: 8px;
               margin-bottom: 10px;
@@ -286,17 +369,49 @@
               padding: 8px;
               box-sizing: border-box;
             }
+            .pain-icon {
+              width: 80px;
+              height: 80px;
+              border-radius: 10px;
+              object-fit: cover;
+              background-color: #fff;
+            }
+            .pain-card {
+              flex: 1;
+              padding: 18px;
+              border-radius: 14px;
+              font-size: 15px;
+              font-weight: 700;
+              cursor: pointer;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 12px;
+              transition: all 0.2s;
+            }
 
             /* Desktop / Wide Screen Overrides */
             @media (min-width: 768px) {
               .app-container {
-                max-width: 700px; 
+                max-width: 700px;
+                font-size: 16px;
               }
               .bottom-nav {
                 max-width: 700px; 
               }
               .exercise-image {
-                height: 350px; 
+                height: 400px; 
+              }
+              .pain-icon {
+                width: 120px;
+                height: 120px;
+                border-radius: 14px;
+              }
+              .pain-card {
+                padding: 24px;
+                border-radius: 16px;
+                font-size: 17px;
+                gap: 14px;
               }
             }
           `}</style>
@@ -306,13 +421,13 @@
             <div style={{ padding: "40px 24px" }}>
               <div style={{ textAlign: "center", marginBottom: 32 }}>
                 <img src="./logo-WP-Social-OnlyIcon.jpg" alt="Workplace Physiocare Logo" style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 12px", display: "block", boxShadow: `0 8px 32px ${accent}40`, objectFit: "cover" }} />
-                <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Workplace Physiocare</h1>
-                <p style={{ fontSize: 13, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>Your Health Partner at Work</p>
+                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Workplace Physiocare</h1>
+                <p style={{ fontSize: 14, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>Your Health Partner at Work</p>
               </div>
 
               {/* Q1: TIMER SELECTOR */}
               <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Κάθε πόσα λεπτά θέλετε να κάνετε διάλειμμα;</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Κάθε πόσα λεπτά θέλετε να κάνετε διάλειμμα;</div>
                 <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
                   {[20, 30, 45, 60].map(min => (
                     <button key={min} onClick={() => setWorkMinutes(min)} style={{
@@ -342,43 +457,35 @@
 
               {/* Q2: PAIN PRESENCE */}
               <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Αισθάνεστε κάποιον πόνο;</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Αισθάνεστε κάποιον πόνο;</div>
                 <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-                  <button onClick={() => setHasPain(true)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === true ? accent : "#1a1a28"}`, backgroundColor: hasPain === true ? `${accent}15` : "#141420", color: hasPain === true ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Ναι</button>
-                  <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : "#1a1a28"}`, backgroundColor: hasPain === false ? `${accent}15` : "#141420", color: hasPain === false ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
+                  <button onClick={() => setHasPain(true)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === true ? accent : "#1a1a28"}`, backgroundColor: hasPain === true ? `${accent}15` : "#141420", color: hasPain === true ? accent : "#9ca3af", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Ναι</button>
+                  <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : "#1a1a28"}`, backgroundColor: hasPain === false ? `${accent}15` : "#141420", color: hasPain === false ? accent : "#9ca3af", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
                 </div>
 
                 {/* Q3: PAIN LOCATION (Conditional with Images!) */}
                 {hasPain && (
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28" }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 16, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#f1f5f9", marginBottom: 16, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
                     <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                       
                       {/* Neck Selection Card */}
-                      <button onClick={() => setPainLocation('neck')} style={{ 
-                        flex: 1, padding: "16px", borderRadius: 12, 
+                      <button className="pain-card" onClick={() => setPainLocation('neck')} style={{ 
                         border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, 
                         backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", 
                         color: painLocation === 'neck' ? accent : "#9ca3af", 
-                        fontSize: 14, fontWeight: 700, cursor: "pointer",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
-                        transition: "all 0.2s"
                       }}>
-                        <img src="./officeFemale.png" alt="Πόνος στον Αυχένα" style={{ width: "70px", height: "70px", borderRadius: "8px", objectFit: "cover", backgroundColor: "#fff" }} />
+                        <img className="pain-icon" src="./officeFemale.png" alt="Πόνος στον Αυχένα" />
                         <span>Αυχένας</span>
                       </button>
 
                       {/* Back Selection Card */}
-                      <button onClick={() => setPainLocation('back')} style={{ 
-                        flex: 1, padding: "16px", borderRadius: 12, 
+                      <button className="pain-card" onClick={() => setPainLocation('back')} style={{ 
                         border: `2px solid ${painLocation === 'back' ? accent : "#1a1a28"}`, 
                         backgroundColor: painLocation === 'back' ? `${accent}15` : "#141420", 
                         color: painLocation === 'back' ? accent : "#9ca3af", 
-                        fontSize: 14, fontWeight: 700, cursor: "pointer",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
-                        transition: "all 0.2s"
                       }}>
-                        <img src="./officeMale.png" alt="Πόνος στη Μέση" style={{ width: "70px", height: "70px", borderRadius: "8px", objectFit: "cover", backgroundColor: "#fff" }} />
+                        <img className="pain-icon" src="./officeMale.png" alt="Πόνος στη Μέση" />
                         <span>Μέση</span>
                       </button>
                       
@@ -394,13 +501,20 @@
               >
                 Έναρξη Εργασίας
               </button>
+
+              {/* ─── DISCLAIMER ─── */}
+              <div style={{ marginTop: 24, padding: "12px 14px", borderRadius: 10, backgroundColor: "#0c0c18", border: "1px solid #1a1a28" }}>
+                <div style={{ fontSize: 11, color: "#4b5563", lineHeight: 1.7, textAlign: "center" }}>
+                  <span style={{ color: "#6b7280", fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα και συμβουλευτείτε τον γιατρό ή φυσιοθεραπευτή σας. Η χρήση της εφαρμογής γίνεται με δική σας ευθύνη.
+                </div>
+              </div>
             </div>
           )}
 
           {/* ═══ WORKING SCREEN ═══ */}
           {screen === "working" && (
             <div style={{ padding: "32px 24px", textAlign: "center" }}>
-              <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 24 }}>Μπορείτε να ελαχιστοποιήσετε το παράθυρο. Θα σας ειδοποιήσουμε.</div>
+              <div style={{ fontSize: 15, color: "#6b7280", marginBottom: 24 }}>Μπορείτε να ελαχιστοποιήσετε το παράθυρο. Θα σας ειδοποιήσουμε.</div>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
                 <TimerRing progress={1 - (timeLeft / (workMinutes * 60))} timeLeft={timeLeft} totalTime={workMinutes * 60} isRunning={isRunning} color={accent} size={220} />
               </div>
@@ -415,8 +529,31 @@
           {screen === "break" && (
             <div style={{ padding: "24px" }}>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 800, color: accent, margin: "0 0 4px" }}>Ώρα για Διάλειμμα!</h2>
-                <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>Κάντε τις παρακάτω ασκήσεις με τον δικό σας ρυθμό.</p>
+                <h2 style={{ fontSize: 26, fontWeight: 800, color: accent, margin: "0 0 4px" }}>Ώρα για Διάλειμμα!</h2>
+                <p style={{ fontSize: 14, color: "#9ca3af", margin: "0 0 12px" }}>Κάντε τις παρακάτω ασκήσεις με τον δικό σας ρυθμό.</p>
+                
+                {/* Break duration timer */}
+                <div style={{ 
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "8px 16px", borderRadius: 20, 
+                  backgroundColor: breakReminder ? "#f59e0b15" : "#141420",
+                  border: `1px solid ${breakReminder ? "#f59e0b40" : "#1a1a28"}`,
+                  animation: breakReminder ? "pulseReminder 1.5s ease-in-out infinite" : "none",
+                  transition: "all 0.3s"
+                }}>
+                  <span style={{ fontSize: 14 }}>{breakReminder ? "⚠️" : "⏱️"}</span>
+                  <span style={{ 
+                    fontSize: 16, fontWeight: 800, fontFamily: "monospace",
+                    color: breakReminder ? "#f59e0b" : "#9ca3af"
+                  }}>
+                    {formatBreakTime(breakElapsed)}
+                  </span>
+                  {breakReminder && (
+                    <span style={{ fontSize: 11, color: "#f59e0b", fontWeight: 600 }}>
+                      Ώρα για επιστροφή!
+                    </span>
+                  )}
+                </div>
               </div>
 
               {activeBreakExercises.map((ex) => {
@@ -424,24 +561,29 @@
                 return (
                   <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isDone ? "#0a0a14" : "#0c0c18", border: `1px solid ${isDone ? "#22c55e40" : "#1a1a28"}`, transition: "all 0.3s" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: isDone ? "#6b7280" : "#e2e8f0" }}>{ex.name}</div>
-                      <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: isDone ? "#6b7280" : "#e2e8f0" }}>{ex.name}</div>
+                      <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                     </div>
                     
                     <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${isDone ? "#1a1a28" : accent + "40"}`, opacity: isDone ? 0.5 : 1 }} />
-                    <div style={{ fontSize: 13, color: isDone ? "#4b5563" : "#9ca3af", lineHeight: 1.5, marginBottom: "12px" }}>{ex.instruction}</div>
+                    <div style={{ fontSize: 14, color: isDone ? "#4b5563" : "#9ca3af", lineHeight: 1.6, marginBottom: "12px" }}>{ex.instruction}</div>
                     
                     {isDone ? (
-                      <div style={{ fontSize: 12, color: "#22c55e", fontWeight: 700, textAlign: "center", padding: "8px", backgroundColor: "#22c55e10", borderRadius: "8px" }}>✓ Ολοκληρώθηκε</div>
+                      <div style={{ fontSize: 13, color: "#22c55e", fontWeight: 700, textAlign: "center", padding: "8px", backgroundColor: "#22c55e10", borderRadius: "8px" }}>✓ Ολοκληρώθηκε</div>
                     ) : (
-                      <button onClick={() => markExerciseDone(ex.id)} style={{ width: "100%", padding: "10px", borderRadius: 8, border: "none", backgroundColor: `${accent}20`, color: accent, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-                        Ολοκλήρωση Άσκησης
-                      </button>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button onClick={() => markExerciseDone(ex.id)} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", backgroundColor: `${accent}20`, color: accent, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+                          ✓ Ολοκλήρωση
+                        </button>
+                        <button onClick={() => skipExercise(ex.id)} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #1a1a28", backgroundColor: "#141420", color: "#6b7280", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                          Παράλειψη ↷
+                        </button>
+                      </div>
                     )}
                   </div>
                 );
               })}
-              <button onClick={finishBreak} style={{ width: "100%", padding: "16px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${accent}, ${accentDark})`, color: "#fff", fontSize: 15, fontWeight: 800, cursor: "pointer", marginTop: 12, boxShadow: `0 4px 20px ${accent}40` }}>
+              <button onClick={finishBreak} style={{ width: "100%", padding: "16px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${accent}, ${accentDark})`, color: "#fff", fontSize: 16, fontWeight: 800, cursor: "pointer", marginTop: 12, boxShadow: `0 4px 20px ${accent}40` }}>
                 Επιστροφή στην Εργασία
               </button>
             </div>
@@ -449,7 +591,7 @@
 
           {/* ═══ EXERCISE LIBRARY SCREEN ═══ */}
           {screen === "exercises" && (
-            <div style={{ padding: "20px" }}>
+            <div style={{ padding: "20px", paddingBottom: "100px" }}>
               <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                 <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: accent, cursor: "pointer", fontSize: 20, padding: 0, marginRight: 12 }}>←</button>
                 <h2 style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", margin: 0 }}>Βιβλιοθήκη Ασκήσεων</h2>
@@ -468,23 +610,30 @@
               {displayedLibraryExercises.map((ex) => (
                 <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 16, backgroundColor: "#0c0c18", border: "1px solid #14141f" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
-                    <span style={{ fontSize: 11, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
+                    <span style={{ fontSize: 12, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                   </div>
                   
                   <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${accent}40` }} />
-                  <div style={{ fontSize: 13, color: "#9ca3af", lineHeight: 1.5, marginBottom: 8 }}>{ex.instruction}</div>
-                  <div style={{ fontSize: 11, color: "#6b7280", fontStyle: "italic" }}>{ex.evidence}</div>
+                  <div style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.6, marginBottom: 8 }}>{ex.instruction}</div>
+                  <div style={{ fontSize: 12, color: "#6b7280", fontStyle: "italic" }}>{ex.evidence}</div>
                 </div>
               ))}
+
+              {/* ─── DISCLAIMER (Library screen) ─── */}
+              <div style={{ marginTop: 8, padding: "12px 14px", borderRadius: 10, backgroundColor: "#0c0c18", border: "1px solid #1a1a28" }}>
+                <div style={{ fontSize: 11, color: "#4b5563", lineHeight: 1.7, textAlign: "center" }}>
+                  <span style={{ color: "#6b7280", fontWeight: 600 }}>⚕️ Σημαντική Σημείωση:</span> Οι ασκήσεις αυτές είναι γενικής φύσεως και δεν αντικαθιστούν εξατομικευμένη ιατρική ή φυσιοθεραπευτική συμβουλή. Σταματήστε αμέσως αν νιώσετε έντονο πόνο, ζάλη ή μούδιασμα.
+                </div>
+              </div>
             </div>
           )}
 
           {/* ═══ BOTTOM NAV ═══ */}
           {(screen === "home" || screen === "exercises") && (
             <div className="bottom-nav">
-              <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
-              <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>📖 Ασκήσεις</button>
+              <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
+              <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>💪🏻 Ασκήσεις</button>
             </div>
           )}
         </div>
