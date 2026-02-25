@@ -28,10 +28,10 @@
 
     // ─── EXERCISE LIBRARY ───
     const EXERCISES = [
+      // NECK EXERCISES
       { 
         id: "chin-tuck", 
-        name: "Οπίσθια Προβολή Αυχένα (Chin tuck)", 
-        duration: 30, 
+        name: "Οπίσθια Προβολή Αυχένα", 
         reps: "5-10 επαν.", 
         bodyArea: "neck", 
         instruction: "Τραβήξτε αργά το κεφάλι σας προς τα πίσω και ελαφρώς προς τα κάτω. Θα νιώσετε ήπια ένταση στον αυχένα.", 
@@ -41,7 +41,6 @@
       { 
         id: "neck-ext", 
         name: "Έκταση Αυχένα", 
-        duration: 30, 
         reps: "5-10 επαν.", 
         bodyArea: "neck", 
         instruction: "Κλίνετε αργά το κεφάλι προς τα πίσω μέχρι να νιώσετε πίεση στο πίσω μέρος του αυχένα. Σταματήστε αμέσως αν νιώσετε ζάλη.", 
@@ -51,7 +50,6 @@
       { 
         id: "neck-side", 
         name: "Πλάγια κάμψη Αυχένα", 
-        duration: 40, 
         reps: "5-10 επαν.", 
         bodyArea: "neck", 
         instruction: "Κρατώντας τη μύτη σας στραμμένη μπροστά, φέρτε αργά το αριστερό σας αυτί προς τον αριστερό ώμο. Επαναλάβετε προς τα δεξιά.", 
@@ -61,26 +59,61 @@
       { 
         id: "shoulder-circles", 
         name: "Κυκλικές Κινήσεις Ώμων", 
-        duration: 30, 
         reps: "10-15 επαν.", 
-        bodyArea: "shoulders", 
-        instruction: "Κάντε αργούς, μεγάλους κύκλους με τους ώμους. Κάθε φορά που οι ώμοι πάνε προς τα πίσω και κάτω, πλησιάστε τις ωμοπλάτες μεταξύ τους. Τα χέρια μένουν χαλαρά.", 
+        bodyArea: "neck", 
+        instruction: "Κάντε αργούς, μεγάλους κύκλους με τους ώμους. Κάθε φορά που οι ώμοι πάνε προς τα πίσω και κάτω, πλησιάστε τις ωμοπλάτες μεταξύ τους.", 
         evidence: "Χαλαρώνει την ένταση της ωμικής ζώνης.", 
         image: "./kiklikes-kiniseis-wmwn.png" 
       },
       { 
         id: "scapula-stretch", 
         name: "Διάταση Ανελκτήρα", 
-        duration: 60, 
         reps: "2-3 επαν. x 30s", 
         bodyArea: "neck", 
         instruction: "Πιάστε την άκρη της καρέκλας. Γυρίστε το κεφάλι διαγώνια, σαν να κοιτάτε τη μασχάλη της άλλης πλευράς. Πιέστε απαλά το κεφάλι με το ελεύθερο χέρι.", 
         evidence: "Κρατήστε την διάταση για 30-60 δευτερόλεπτα κάθε φορά.", 
         image: "./diatasi-aneltira-wmoplatis.png" 
+      },
+      // BACK / TRUNK EXERCISES
+      { 
+        id: "pelvic-tilt", 
+        name: "Πυελική κλίση (καθιστή θέση)", 
+        reps: "10-15 επαν.", 
+        bodyArea: "back", 
+        instruction: "Καθίστε στην καρέκλα. Τραβήξτε απαλά τον αφαλό προς τα μέσα και γείρετε αργά τη λεκάνη προς τα εμπρός. Μείνετε για 2-3 δευτ. και μετά γείρετε προς τα πίσω.", 
+        evidence: "Εκτελέστε 5 φορές καθημερινά.", 
+        image: "./Pelvic-tilt.jpg" 
+      },
+      { 
+        id: "trunk-rotation", 
+        name: "Στροφή σώματος", 
+        reps: "5-10 επαν.", 
+        bodyArea: "back", 
+        instruction: "Σταυρώστε τα χέρια σας πάνω από το στήθος. Στρίψτε τη σπονδυλική σας στήλη προς τη μία πλευρά όσο το επιτρέπει η άνεσή σας. Επιστρέψτε και επαναλάβετε.", 
+        evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
+        image: "./Trunk-rotation.jpg" 
+      },
+      { 
+        id: "side-bending", 
+        name: "Πλάγια κάμψη οσφύος", 
+        reps: "5-10 επαν.", 
+        bodyArea: "back", 
+        instruction: "Σταθείτε όρθιοι. Το ένα χέρι τοποθετείται στη μέση, ενώ το άλλο ανεβαίνει πάνω από το κεφάλι και τεντώνεται προς την αντίθετη κατεύθυνση.", 
+        evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
+        image: "./Side-bending-trunk.jpg" 
+      },
+      { 
+        id: "trunk-ext", 
+        name: "Έκταση σπονδυλικής στήλης", 
+        reps: "5-10 επαν.", 
+        bodyArea: "back", 
+        instruction: "Σταθείτε όρθιοι και εκτείνετε τη σπονδυλική σας στήλη κάνοντας μια μικρή καμπύλη προς τα πίσω. Τα χέρια στη μέση για στήριξη.", 
+        evidence: "Εκτελέστε 5 φορές καθημερινά.", 
+        image: "./Trunk-extension.jpg" 
       }
     ];
 
-    const AREA_LABELS = { all: "Όλες", neck: "Αυχένας", shoulders: "Ώμοι" };
+    const AREA_LABELS = { all: "Όλες", neck: "Αυχένας", back: "Μέση" };
 
     // ─── TIMER RING ───
     function TimerRing({ progress, timeLeft, totalTime, isRunning, color, size = 200 }) {
@@ -108,18 +141,24 @@
     // ─── MAIN APP ───
     function BreakFlow() {
       const [screen, setScreen] = useState("home"); 
+      
+      // Setup State
       const [workMinutes, setWorkMinutes] = useState(30);
+      const [hasPain, setHasPain] = useState(null); // true or false
+      const [painLocation, setPainLocation] = useState(null); // 'neck' or 'back'
+
+      // Timer State
       const [timeLeft, setTimeLeft] = useState(30 * 60);
       const [isRunning, setIsRunning] = useState(false);
-      const [currentExercise, setCurrentExercise] = useState(null);
-      const [exerciseTimeLeft, setExerciseTimeLeft] = useState(0);
-      const [exerciseRunning, setExerciseRunning] = useState(false);
+      
+      // Break State
+      const [activeBreakExercises, setActiveBreakExercises] = useState([]);
       const [activeFilter, setActiveFilter] = useState("all");
 
       const todayDateString = new Date().toDateString();
-      const [savedDate, setSavedDate] = useStickyState(todayDateString, "bf-neck-date");
-      const [completedToday, setCompletedToday] = useStickyState([], "bf-neck-completed");
-      const [totalBreaksToday, setTotalBreaksToday] = useStickyState(0, "bf-neck-breaks");
+      const [savedDate, setSavedDate] = useStickyState(todayDateString, "bf-date-v2");
+      const [completedToday, setCompletedToday] = useStickyState([], "bf-completed-v2");
+      const [totalBreaksToday, setTotalBreaksToday] = useStickyState(0, "bf-breaks-v2");
 
       useEffect(() => {
         if (savedDate !== todayDateString) {
@@ -127,63 +166,85 @@
         }
       }, [todayDateString, savedDate]);
 
-      // Upgraded Double-Chime Sound!
+      // Sound
       const playChime = useCallback(() => {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          
-          osc.connect(gain); 
-          gain.connect(ctx.destination);
-          
+          osc.connect(gain); gain.connect(ctx.destination);
           osc.type = "sine"; 
-          
-          // Double note chime
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5 note
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.2); // E5 note
-          
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); 
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.2); 
           gain.gain.setValueAtTime(0, ctx.currentTime);
           gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-          
-          osc.start(ctx.currentTime); 
-          osc.stop(ctx.currentTime + 1.5);
+          osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 1.5);
         } catch (e) {
             console.log("Audio not supported or blocked");
         }
       }, []);
 
+      // Desktop Notification Function
+      const triggerNotification = () => {
+        if (Notification.permission === 'granted') {
+          new Notification('Ώρα για Διάλειμμα!', {
+            body: 'Ο χρόνος εργασίας τελείωσε. Κάντε τις ασκήσεις σας.',
+            icon: './logo-WP-Social-OnlyIcon.jpg'
+          });
+        }
+      };
+
+      // Work Timer Logic
       useEffect(() => {
         if (!isRunning || screen !== "working") return;
         if (timeLeft <= 0) {
-          playChime(); setScreen("break"); setIsRunning(false); setCurrentExercise(null);
+          playChime(); 
+          triggerNotification();
+          
+          // Generate exercises based on pain selections
+          let chosenExercises = [];
+          if (hasPain && painLocation === 'neck') {
+            chosenExercises = EXERCISES.filter(ex => ex.bodyArea === 'neck');
+          } else if (hasPain && painLocation === 'back') {
+            chosenExercises = EXERCISES.filter(ex => ex.bodyArea === 'back');
+          } else {
+            // No pain: Mix of 5 random exercises
+            chosenExercises = [...EXERCISES].sort(() => 0.5 - Math.random()).slice(0, 5);
+          }
+          setActiveBreakExercises(chosenExercises);
+          setScreen("break"); 
+          setIsRunning(false);
           return;
         }
         const t = setTimeout(() => setTimeLeft(tl => tl - 1), 1000);
         return () => clearTimeout(t);
-      }, [isRunning, timeLeft, screen]);
+      }, [isRunning, timeLeft, screen, hasPain, painLocation]);
 
-      useEffect(() => {
-        if (!exerciseRunning || exerciseTimeLeft <= 0) {
-          if (exerciseRunning && exerciseTimeLeft <= 0 && currentExercise) {
-            if (!completedToday.includes(currentExercise.id)) setCompletedToday(prev => [...prev, currentExercise.id]);
-            setExerciseRunning(false); playChime();
-          }
-          return;
+      const startWork = () => { 
+        // Request notification permission when user clicks start
+        if (typeof Notification !== "undefined" && Notification.permission !== "granted" && Notification.permission !== "denied") {
+          Notification.requestPermission();
         }
-        const t = setTimeout(() => setExerciseTimeLeft(tl => tl - 1), 1000);
-        return () => clearTimeout(t);
-      }, [exerciseRunning, exerciseTimeLeft, currentExercise]);
+        setTimeLeft(workMinutes * 60); 
+        setIsRunning(true); 
+        setScreen("working"); 
+      };
 
-      const startWork = () => { setTimeLeft(workMinutes * 60); setIsRunning(true); setScreen("working"); };
-      const startExercise = (ex) => { setCurrentExercise(ex); setExerciseTimeLeft(ex.duration); setExerciseRunning(true); };
-      const finishBreak = () => { setTotalBreaksToday(b => b + 1); setCurrentExercise(null); setExerciseRunning(false); startWork(); };
+      const finishBreak = () => { 
+        setTotalBreaksToday(b => b + 1); 
+        startWork(); 
+      };
 
-      const displayedExercises = activeFilter === "all" ? EXERCISES : EXERCISES.filter(ex => ex.bodyArea === activeFilter);
+      const markExerciseDone = (id) => {
+        if (!completedToday.includes(id)) {
+          setCompletedToday(prev => [...prev, id]);
+        }
+      };
+
+      const displayedLibraryExercises = activeFilter === "all" ? EXERCISES : EXERCISES.filter(ex => ex.bodyArea === activeFilter);
       const accent = "#3b82f6";
       const accentDark = "#1d4ed8";
-
       const isCustomTime = ![20, 30, 45, 60].includes(workMinutes);
 
       return (
@@ -194,31 +255,27 @@
             input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
           `}</style>
 
-          {/* HOME SCREEN */}
+          {/* ═══ HOME SCREEN (SETUP) ═══ */}
           {screen === "home" && (
             <div style={{ padding: "40px 24px" }}>
-              <div style={{ textAlign: "center", marginBottom: 40 }}>
-                {/* YOUR LOGO */}
-                <img src="./logo-WP-Social-OnlyIcon.jpg" alt="Workplace Physiocare Logo" style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 16px", display: "block", boxShadow: `0 8px 32px ${accent}40`, objectFit: "cover" }} />
-                
-                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>BreakO-Clock</h1>
-                <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Workplace Physiocare</p>
+              <div style={{ textAlign: "center", marginBottom: 32 }}>
+                <img src="./logo-WP-Social-OnlyIcon.jpg" alt="Workplace Physiocare Logo" style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 12px", display: "block", boxShadow: `0 8px 32px ${accent}40`, objectFit: "cover" }} />
+                <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Workplace Physiocare</h1>
+                <p style={{ fontSize: 13, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>Your Health Partner at Work</p>
               </div>
 
-              {/* TIMER SELECTOR (WITH MANUAL INPUT) */}
-              <div style={{ marginBottom: 28 }}>
-                <div style={{ fontSize: 10, color: "#4b5563", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 10, textAlign: "center" }}>Χρόνος εργασίας (λεπτά)</div>
-                <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
+              {/* Q1: TIMER SELECTOR */}
+              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Κάθε πόσα λεπτά θέλετε να κάνετε διάλειμμα;</div>
+                <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
                   {[20, 30, 45, 60].map(min => (
                     <button key={min} onClick={() => setWorkMinutes(min)} style={{
-                      width: 52, height: 52, borderRadius: 14, border: `2px solid ${workMinutes === min ? accent : "#1a1a28"}`,
-                      backgroundColor: workMinutes === min ? `${accent}15` : "#0c0c18",
-                      color: workMinutes === min ? accent : "#6b7280",
+                      width: 52, height: 52, borderRadius: 12, border: `2px solid ${workMinutes === min ? accent : "#1a1a28"}`,
+                      backgroundColor: workMinutes === min ? `${accent}15` : "#141420",
+                      color: workMinutes === min ? accent : "#9ca3af",
                       fontSize: 16, fontWeight: 800, cursor: "pointer", transition: "all 0.2s"
                     }}>{min}</button>
                   ))}
-                  
-                  {/* MANUAL TIMER INPUT */}
                   <input 
                     type="number" 
                     placeholder="Άλλο"
@@ -227,26 +284,50 @@
                       if(val > 0) setWorkMinutes(val);
                     }}
                     style={{
-                      width: 60, height: 52, borderRadius: 14, 
+                      width: 60, height: 52, borderRadius: 12, 
                       border: `2px solid ${isCustomTime ? accent : "#1a1a28"}`,
-                      backgroundColor: isCustomTime ? `${accent}15` : "#0c0c18",
-                      color: isCustomTime ? accent : "#6b7280",
-                      fontSize: 14, fontWeight: 800, textAlign: "center",
-                      outline: "none"
+                      backgroundColor: isCustomTime ? `${accent}15` : "#141420",
+                      color: isCustomTime ? accent : "#9ca3af",
+                      fontSize: 14, fontWeight: 800, textAlign: "center", outline: "none"
                     }}
                   />
                 </div>
               </div>
 
-              <button onClick={startWork} style={{ width: "100%", padding: "16px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${accent}, ${accentDark})`, color: "#fff", fontSize: 16, fontWeight: 800, cursor: "pointer" }}>Έναρξη Εργασίας</button>
-              <button onClick={() => setScreen("exercises")} style={{ width: "100%", marginTop: 12, padding: "12px", borderRadius: 10, backgroundColor: "#0c0c18", border: "1px solid #14141f", color: "#6b7280", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>📖 Προβολή Ασκήσεων</button>
+              {/* Q2: PAIN PRESENCE */}
+              <div style={{ marginBottom: 24, padding: "16px", backgroundColor: "#0c0c18", borderRadius: "16px", border: "1px solid #1a1a28" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Αισθάνεστε κάποιον πόνο;</div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => setHasPain(true)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === true ? accent : "#1a1a28"}`, backgroundColor: hasPain === true ? `${accent}15` : "#141420", color: hasPain === true ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Ναι</button>
+                  <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : "#1a1a28"}`, backgroundColor: hasPain === false ? `${accent}15` : "#141420", color: hasPain === false ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
+                </div>
+
+                {/* Q3: PAIN LOCATION (Conditional) */}
+                {hasPain && (
+                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28", animation: "fadeIn 0.3s ease" }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
+                    <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                      <button onClick={() => setPainLocation('neck')} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", color: painLocation === 'neck' ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Αυχένας</button>
+                      <button onClick={() => setPainLocation('back')} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${painLocation === 'back' ? accent : "#1a1a28"}`, backgroundColor: painLocation === 'back' ? `${accent}15` : "#141420", color: painLocation === 'back' ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Μέση</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <button 
+                onClick={startWork} 
+                disabled={hasPain && painLocation === null}
+                style={{ width: "100%", padding: "16px", borderRadius: 14, border: "none", background: (hasPain && painLocation === null) ? "#1a1a28" : `linear-gradient(135deg, ${accent}, ${accentDark})`, color: (hasPain && painLocation === null) ? "#4b5563" : "#fff", fontSize: 16, fontWeight: 800, cursor: (hasPain && painLocation === null) ? "not-allowed" : "pointer", opacity: (hasPain && painLocation === null) ? 0.7 : 1 }}
+              >
+                Έναρξη Εργασίας
+              </button>
             </div>
           )}
 
-          {/* WORKING SCREEN */}
+          {/* ═══ WORKING SCREEN ═══ */}
           {screen === "working" && (
             <div style={{ padding: "32px 24px", textAlign: "center" }}>
-              <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 24 }}>Μείνετε συγκεντρωμένοι...</div>
+              <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 24 }}>Μπορείτε να ελαχιστοποιήσετε το παράθυρο. Θα σας ειδοποιήσουμε.</div>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
                 <TimerRing progress={1 - (timeLeft / (workMinutes * 60))} timeLeft={timeLeft} totalTime={workMinutes * 60} isRunning={isRunning} color={accent} size={220} />
               </div>
@@ -257,86 +338,80 @@
             </div>
           )}
 
-          {/* BREAK SCREEN */}
+          {/* ═══ BREAK SCREEN ═══ */}
           {screen === "break" && (
             <div style={{ padding: "24px" }}>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Ώρα για Διάλειμμα!</h2>
-                <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Κάντε τις παρακάτω ασκήσεις</p>
+                <h2 style={{ fontSize: 24, fontWeight: 800, color: accent, margin: "0 0 4px" }}>Ώρα για Διάλειμμα!</h2>
+                <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>Κάντε τις παρακάτω ασκήσεις με τον δικό σας ρυθμό.</p>
               </div>
 
-              {EXERCISES.slice(0, 3).map((ex) => {
-                const isActive = currentExercise && currentExercise.id === ex.id;
+              {activeBreakExercises.map((ex) => {
                 const isDone = completedToday.includes(ex.id);
                 return (
-                  <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isActive ? `${accent}10` : "#0c0c18", border: `1px solid ${isActive ? accent + "40" : isDone ? "#3b82f630" : "#14141f"}` }}>
+                  <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isDone ? "#0a0a14" : "#0c0c18", border: `1px solid ${isDone ? "#22c55e40" : "#1a1a28"}`, transition: "all 0.3s" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: isDone ? "#6b7280" : "#e2e8f0" }}>{ex.name}</div>
                       <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                     </div>
                     
-                    <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40`, background: "#141420", padding: "8px", boxSizing: "border-box" }} />
-                    <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, marginBottom: "10px" }}>{ex.instruction}</div>
+                    <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${isDone ? "#1a1a28" : accent + "40"}`, background: "#141420", padding: "8px", boxSizing: "border-box", opacity: isDone ? 0.5 : 1 }} />
+                    <div style={{ fontSize: 13, color: isDone ? "#4b5563" : "#9ca3af", lineHeight: 1.5, marginBottom: "12px" }}>{ex.instruction}</div>
                     
-                    {isActive && exerciseRunning ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{ flex: 1, height: 6, backgroundColor: "#141420", borderRadius: 3, overflow: "hidden" }}>
-                          <div style={{ width: `${((ex.duration - exerciseTimeLeft) / ex.duration) * 100}%`, height: "100%", backgroundColor: accent, borderRadius: 3, transition: "width 1s linear" }} />
-                        </div>
-                        <span style={{ fontSize: 14, fontWeight: 800, color: accent, minWidth: 28 }}>{exerciseTimeLeft}s</span>
-                      </div>
-                    ) : isActive && !exerciseRunning && exerciseTimeLeft <= 0 ? (
-                      <div style={{ fontSize: 11, color: accent, fontWeight: 600 }}>✓ Ολοκληρώθηκε!</div>
+                    {isDone ? (
+                      <div style={{ fontSize: 12, color: "#22c55e", fontWeight: 700, textAlign: "center", padding: "8px", backgroundColor: "#22c55e10", borderRadius: "8px" }}>✓ Ολοκληρώθηκε</div>
                     ) : (
-                      <button onClick={() => startExercise(ex)} disabled={isDone} style={{ padding: "8px 14px", borderRadius: 8, border: "none", backgroundColor: isDone ? "#1a1a28" : `${accent}18`, color: isDone ? "#374151" : accent, fontSize: 12, fontWeight: 700, cursor: isDone ? "default" : "pointer" }}>
-                        {isDone ? "Ολοκληρώθηκε ✓" : "▶ Έναρξη άσκησης"}
+                      <button onClick={() => markExerciseDone(ex.id)} style={{ width: "100%", padding: "10px", borderRadius: 8, border: "none", backgroundColor: `${accent}20`, color: accent, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                        Ολοκλήρωση Άσκησης
                       </button>
                     )}
                   </div>
                 );
               })}
-              <button onClick={finishBreak} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: completedToday.length >= 1 ? `linear-gradient(135deg, ${accent}, ${accentDark})` : "#1a1a28", color: completedToday.length >= 1 ? "#fff" : "#6b7280", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 6 }}>
+              <button onClick={finishBreak} style={{ width: "100%", padding: "16px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${accent}, ${accentDark})`, color: "#fff", fontSize: 15, fontWeight: 800, cursor: "pointer", marginTop: 12, boxShadow: `0 4px 20px ${accent}40` }}>
                 Επιστροφή στην Εργασία
               </button>
             </div>
           )}
 
-          {/* EXERCISE LIBRARY SCREEN WITH FILTERS */}
+          {/* ═══ EXERCISE LIBRARY SCREEN ═══ */}
           {screen === "exercises" && (
             <div style={{ padding: "20px" }}>
-              <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: accent, cursor: "pointer", fontSize: 12, padding: 0, marginBottom: 12 }}>← Πίσω</button>
-              <h2 style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", margin: "0 0 16px" }}>Ασκήσεις</h2>
+              <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+                <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: accent, cursor: "pointer", fontSize: 20, padding: 0, marginRight: 12 }}>←</button>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", margin: 0 }}>Βιβλιοθήκη Ασκήσεων</h2>
+              </div>
               
               {/* BODY AREA FILTERS */}
               <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 12, marginBottom: 12, scrollbarWidth: "none" }}>
                 {Object.entries(AREA_LABELS).map(([key, label]) => (
                   <button key={key} onClick={() => setActiveFilter(key)} style={{
-                    padding: "6px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer",
-                    backgroundColor: activeFilter === key ? accent : "#141420", color: activeFilter === key ? "#fff" : "#6b7280"
+                    padding: "8px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", border: "none", cursor: "pointer",
+                    backgroundColor: activeFilter === key ? accent : "#141420", color: activeFilter === key ? "#fff" : "#9ca3af"
                   }}>{label}</button>
                 ))}
               </div>
               
-              {displayedExercises.map((ex) => (
-                <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 12, backgroundColor: "#0c0c18", border: "1px solid #14141f" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+              {displayedLibraryExercises.map((ex) => (
+                <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 16, backgroundColor: "#0c0c18", border: "1px solid #14141f" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
-                    <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                   </div>
                   
-                  <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40`, background: "#141420", padding: "8px", boxSizing: "border-box" }} />
-                  <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, marginBottom: 8 }}>{ex.instruction}</div>
-                  <div style={{ fontSize: 10, color: "#6b7280" }}>{ex.evidence}</div>
+                  <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "12px", border: `1px solid ${accent}40`, background: "#141420", padding: "8px", boxSizing: "border-box" }} />
+                  <div style={{ fontSize: 13, color: "#9ca3af", lineHeight: 1.5, marginBottom: 8 }}>{ex.instruction}</div>
+                  <div style={{ fontSize: 11, color: "#6b7280", fontStyle: "italic" }}>{ex.evidence}</div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* BOTTOM NAV */}
+          {/* ═══ BOTTOM NAV ═══ */}
           {(screen === "home" || screen === "exercises") && (
-            <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, padding: "12px", background: "#08080f", borderTop: "1px solid #14141f", display: "flex", justifyContent: "center", gap: 12 }}>
-              <button onClick={() => setScreen("home")} style={{ padding: "8px 20px", borderRadius: 10, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontWeight: 600, cursor: "pointer" }}>🏠 Αρχική</button>
-              <button onClick={() => setScreen("exercises")} style={{ padding: "8px 20px", borderRadius: 10, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontWeight: 600, cursor: "pointer" }}>📖 Ασκήσεις</button>
+            <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, padding: "12px", background: "#08080f", borderTop: "1px solid #14141f", display: "flex", justifyContent: "center", gap: 12, zIndex: 10 }}>
+              <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
+              <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>📖 Ασκήσεις</button>
             </div>
           )}
         </div>
