@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BreakFlow - Ασκήσεις Αυχένα</title>
+  <title>BreakO-Clock</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body style="margin: 0; background: #08080f; -webkit-tap-highlight-color: transparent;">
   <div id="root"></div>
 
-  <script type="text/babel">
+  <script type="text/babel" data-presets="react,env">
     const { useState, useEffect, useCallback } = React;
 
     // ─── LOCAL STORAGE HOOK ───
@@ -26,13 +26,13 @@
       return [value, setValue];
     }
 
-    // ─── EXERCISE LIBRARY (GREEK NECK EXERCISES) ───
+    // ─── EXERCISE LIBRARY ───
     const EXERCISES = [
       { 
         id: "chin-tuck", 
         name: "Οπίσθια Προβολή Αυχένα (Chin tuck)", 
         duration: 30, 
-        reps: "5-10 επαναλήψεις", 
+        reps: "5-10 επαν.", 
         bodyArea: "neck", 
         instruction: "Τραβήξτε αργά το κεφάλι σας προς τα πίσω και ελαφρώς προς τα κάτω. Θα νιώσετε ήπια ένταση στον αυχένα.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
@@ -42,9 +42,9 @@
         id: "neck-ext", 
         name: "Έκταση Αυχένα", 
         duration: 30, 
-        reps: "5-10 επαναλήψεις", 
+        reps: "5-10 επαν.", 
         bodyArea: "neck", 
-        instruction: "Κλίνετε αργά το κεφάλι προς τα πίσω μέχρι να νιώσετε πίεση στο πίσω μέρος του αυχένα. Σταματήστε αμέσως αν νιώσετε ζάλη ή θολώσει η όρασή σας.", 
+        instruction: "Κλίνετε αργά το κεφάλι προς τα πίσω μέχρι να νιώσετε πίεση στο πίσω μέρος του αυχένα. Σταματήστε αμέσως αν νιώσετε ζάλη.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
         image: "./askisi-ektasi-auxena.png" 
       },
@@ -52,9 +52,9 @@
         id: "neck-side", 
         name: "Πλάγια κάμψη Αυχένα", 
         duration: 40, 
-        reps: "5-10 επαναλήψεις", 
+        reps: "5-10 επαν.", 
         bodyArea: "neck", 
-        instruction: "Κρατώντας τη μύτη σας στραμμένη μπροστά, φέρτε αργά το αριστερό σας αυτί προς τον αριστερό ώμο. Επαναλάβετε προς τα δεξιά. Κρατήστε την κίνηση ήπια και ρυθμική.", 
+        instruction: "Κρατώντας τη μύτη σας στραμμένη μπροστά, φέρτε αργά το αριστερό σας αυτί προς τον αριστερό ώμο. Επαναλάβετε προς τα δεξιά.", 
         evidence: "Και στις δύο πλευρές. Εκτελέστε 5 φορές καθημερινά.", 
         image: "./plagia-kampsi-auxena.png" 
       },
@@ -62,23 +62,25 @@
         id: "shoulder-circles", 
         name: "Κυκλικές Κινήσεις Ώμων", 
         duration: 30, 
-        reps: "10-15 επαναλήψεις", 
+        reps: "10-15 επαν.", 
         bodyArea: "shoulders", 
-        instruction: "Κάντε αργούς, μεγάλους κύκλους με τους ώμους. Κάθε φορά που οι ώμοι πάνε προς τα πίσω και κάτω, πλησιάστε τις ωμοπλάτες μεταξύ τους για να «ανοίξει» το στήθος. Τα χέρια μένουν χαλαρά δίπλα στο σώμα.", 
+        instruction: "Κάντε αργούς, μεγάλους κύκλους με τους ώμους. Κάθε φορά που οι ώμοι πάνε προς τα πίσω και κάτω, πλησιάστε τις ωμοπλάτες μεταξύ τους. Τα χέρια μένουν χαλαρά.", 
         evidence: "Χαλαρώνει την ένταση της ωμικής ζώνης.", 
         image: "./kiklikes-kiniseis-wmwn.png" 
       },
       { 
         id: "scapula-stretch", 
-        name: "Διάταση Ανελκτήρα Ωμοπλάτης", 
+        name: "Διάταση Ανελκτήρα", 
         duration: 60, 
-        reps: "2-3 επαν. x 30-60s", 
+        reps: "2-3 επαν. x 30s", 
         bodyArea: "neck", 
-        instruction: "Πιάστε την άκρη της καρέκλας με το ένα χέρι για να μείνει ο ώμος χαμηλά. Γυρίστε το κεφάλι διαγώνια, σαν να κοιτάτε τη μασχάλη της άλλης πλευράς. Αν χρειάζεται, πιέστε απαλά το κεφάλι με το ελεύθερο χέρι μέχρι να νιώσετε τράβηγμα πλάγια στον αυχένα.", 
+        instruction: "Πιάστε την άκρη της καρέκλας. Γυρίστε το κεφάλι διαγώνια, σαν να κοιτάτε τη μασχάλη της άλλης πλευράς. Πιέστε απαλά το κεφάλι με το ελεύθερο χέρι.", 
         evidence: "Κρατήστε την διάταση για 30-60 δευτερόλεπτα κάθε φορά.", 
         image: "./diatasi-aneltira-wmoplatis.png" 
       }
     ];
+
+    const AREA_LABELS = { all: "Όλες", neck: "Αυχένας", shoulders: "Ώμοι" };
 
     // ─── TIMER RING ───
     function TimerRing({ progress, timeLeft, totalTime, isRunning, color, size = 200 }) {
@@ -112,6 +114,7 @@
       const [currentExercise, setCurrentExercise] = useState(null);
       const [exerciseTimeLeft, setExerciseTimeLeft] = useState(0);
       const [exerciseRunning, setExerciseRunning] = useState(false);
+      const [activeFilter, setActiveFilter] = useState("all");
 
       const todayDateString = new Date().toDateString();
       const [savedDate, setSavedDate] = useStickyState(todayDateString, "bf-neck-date");
@@ -164,6 +167,7 @@
       const startExercise = (ex) => { setCurrentExercise(ex); setExerciseTimeLeft(ex.duration); setExerciseRunning(true); };
       const finishBreak = () => { setTotalBreaksToday(b => b + 1); setCurrentExercise(null); setExerciseRunning(false); startWork(); };
 
+      const displayedExercises = activeFilter === "all" ? EXERCISES : EXERCISES.filter(ex => ex.bodyArea === activeFilter);
       const accent = "#3b82f6";
       const accentDark = "#1d4ed8";
 
@@ -176,12 +180,13 @@
             <div style={{ padding: "40px 24px" }}>
               <div style={{ textAlign: "center", marginBottom: 40 }}>
                 <div style={{ width: 64, height: 64, borderRadius: 18, margin: "0 auto 16px", background: `linear-gradient(135deg, ${accent}, ${accentDark})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30 }}>🌊</div>
-                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>Ασκήσεις Αυχένα</h1>
+                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", margin: "0 0 4px" }}>BreakO-Clock</h1>
                 <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Workplace Physiocare</p>
               </div>
 
+              {/* TIMER SELECTOR */}
               <div style={{ marginBottom: 28 }}>
-                <div style={{ fontSize: 10, color: "#4b5563", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 10, textAlign: "center" }}>Χρονος εργασιας (λεπτα)</div>
+                <div style={{ fontSize: 10, color: "#4b5563", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 10, textAlign: "center" }}>Χρόνος εργασίας (λεπτά)</div>
                 <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
                   {[20, 30, 45, 60].map(min => (
                     <button key={min} onClick={() => setWorkMinutes(min)} style={{
@@ -221,8 +226,8 @@
                 <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Κάντε τις παρακάτω ασκήσεις</p>
               </div>
 
-              {EXERCISES.map((ex) => {
-                const isActive = currentExercise?.id === ex.id;
+              {EXERCISES.slice(0, 3).map((ex) => {
+                const isActive = currentExercise && currentExercise.id === ex.id;
                 const isDone = completedToday.includes(ex.id);
                 return (
                   <div key={ex.id} style={{ padding: 16, borderRadius: 14, marginBottom: 12, backgroundColor: isActive ? `${accent}10` : "#0c0c18", border: `1px solid ${isActive ? accent + "40" : isDone ? "#3b82f630" : "#14141f"}` }}>
@@ -231,7 +236,7 @@
                       <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                     </div>
                     
-                    <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40` }} />
+                    <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40`, background: "#141420" }} />
                     <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, marginBottom: "10px" }}>{ex.instruction}</div>
                     
                     {isActive && exerciseRunning ? (
@@ -245,7 +250,7 @@
                       <div style={{ fontSize: 11, color: accent, fontWeight: 600 }}>✓ Ολοκληρώθηκε!</div>
                     ) : (
                       <button onClick={() => startExercise(ex)} disabled={isDone} style={{ padding: "8px 14px", borderRadius: 8, border: "none", backgroundColor: isDone ? "#1a1a28" : `${accent}18`, color: isDone ? "#374151" : accent, fontSize: 12, fontWeight: 700, cursor: isDone ? "default" : "pointer" }}>
-                        {isDone ? "Ολοκληρώθηκε ✓" : "▶ Ξεκινήστε τον χρονομετρητή"}
+                        {isDone ? "Ολοκληρώθηκε ✓" : "▶ Έναρξη άσκησης"}
                       </button>
                     )}
                   </div>
@@ -257,19 +262,29 @@
             </div>
           )}
 
-          {/* EXERCISE LIBRARY SCREEN */}
+          {/* EXERCISE LIBRARY SCREEN WITH FILTERS */}
           {screen === "exercises" && (
             <div style={{ padding: "20px" }}>
               <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: accent, cursor: "pointer", fontSize: 12, padding: 0, marginBottom: 12 }}>← Πίσω</button>
               <h2 style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", margin: "0 0 16px" }}>Ασκήσεις</h2>
               
-              {EXERCISES.map((ex) => (
+              {/* BODY AREA FILTERS */}
+              <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 12, marginBottom: 12, scrollbarWidth: "none" }}>
+                {Object.entries(AREA_LABELS).map(([key, label]) => (
+                  <button key={key} onClick={() => setActiveFilter(key)} style={{
+                    padding: "6px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer",
+                    backgroundColor: activeFilter === key ? accent : "#141420", color: activeFilter === key ? "#fff" : "#6b7280"
+                  }}>{label}</button>
+                ))}
+              </div>
+              
+              {displayedExercises.map((ex) => (
                 <div key={ex.id} style={{ padding: 14, borderRadius: 12, marginBottom: 12, backgroundColor: "#0c0c18", border: "1px solid #14141f" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#e2e8f0" }}>{ex.name}</div>
                     <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                   </div>
-                  <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40` }} />
+                  <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${accent}40`, background: "#141420" }} />
                   <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, marginBottom: 8 }}>{ex.instruction}</div>
                   <div style={{ fontSize: 10, color: "#6b7280" }}>{ex.evidence}</div>
                 </div>
