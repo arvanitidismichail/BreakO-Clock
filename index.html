@@ -82,7 +82,7 @@
         bodyArea: "back", 
         instruction: "Καθίστε στην καρέκλα. Τραβήξτε απαλά τον αφαλό προς τα μέσα και γείρετε αργά τη λεκάνη προς τα εμπρός. Μείνετε για 2-3 δευτ. και μετά γείρετε προς τα πίσω.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
-        image: "./Pelvic-tilt.png" 
+        image: "./Pelvic-tilt.jpg" 
       },
       { 
         id: "trunk-rotation", 
@@ -91,7 +91,7 @@
         bodyArea: "back", 
         instruction: "Σταυρώστε τα χέρια σας πάνω από το στήθος. Στρίψτε τη σπονδυλική σας στήλη προς τη μία πλευρά όσο το επιτρέπει η άνεσή σας. Επιστρέψτε και επαναλάβετε.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
-        image: "./Trunk-rotation.png" 
+        image: "./Trunk-rotation.jpg" 
       },
       { 
         id: "side-bending", 
@@ -100,7 +100,7 @@
         bodyArea: "back", 
         instruction: "Σταθείτε όρθιοι. Το ένα χέρι τοποθετείται στη μέση, ενώ το άλλο ανεβαίνει πάνω από το κεφάλι και τεντώνεται προς την αντίθετη κατεύθυνση.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
-        image: "./Side-bending-trunk.png" 
+        image: "./Side-bending-trunk.jpg" 
       },
       { 
         id: "trunk-ext", 
@@ -109,7 +109,7 @@
         bodyArea: "back", 
         instruction: "Σταθείτε όρθιοι και εκτείνετε τη σπονδυλική σας στήλη κάνοντας μια μικρή καμπύλη προς τα πίσω. Τα χέρια στη μέση για στήριξη.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
-        image: "./Trunk-extension.png" 
+        image: "./Trunk-extension.jpg" 
       }
     ];
 
@@ -124,7 +124,7 @@
       const seconds = timeLeft % 60;
 
       return (
-        <div style={{ position: "relative", width: size, height: size }}>
+        <div style={{ position: "relative", width: size, height: size, margin: "0 auto" }}>
           <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
             <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#141420" strokeWidth="6" />
             <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} style={{ transition: "stroke-dashoffset 1s linear", filter: `drop-shadow(0 0 8px ${color}40)` }} />
@@ -144,8 +144,8 @@
       
       // Setup State
       const [workMinutes, setWorkMinutes] = useState(30);
-      const [hasPain, setHasPain] = useState(null); // true or false
-      const [painLocation, setPainLocation] = useState(null); // 'neck' or 'back'
+      const [hasPain, setHasPain] = useState(null); 
+      const [painLocation, setPainLocation] = useState(null); 
 
       // Timer State
       const [timeLeft, setTimeLeft] = useState(30 * 60);
@@ -202,14 +202,12 @@
           playChime(); 
           triggerNotification();
           
-          // Generate exercises based on pain selections
           let chosenExercises = [];
           if (hasPain && painLocation === 'neck') {
             chosenExercises = EXERCISES.filter(ex => ex.bodyArea === 'neck');
           } else if (hasPain && painLocation === 'back') {
             chosenExercises = EXERCISES.filter(ex => ex.bodyArea === 'back');
           } else {
-            // No pain: Mix of 5 random exercises
             chosenExercises = [...EXERCISES].sort(() => 0.5 - Math.random()).slice(0, 5);
           }
           setActiveBreakExercises(chosenExercises);
@@ -222,7 +220,6 @@
       }, [isRunning, timeLeft, screen, hasPain, painLocation]);
 
       const startWork = () => { 
-        // Request notification permission when user clicks start
         if (typeof Notification !== "undefined" && Notification.permission !== "granted" && Notification.permission !== "denied") {
           Notification.requestPermission();
         }
@@ -248,11 +245,61 @@
       const isCustomTime = ![20, 30, 45, 60].includes(workMinutes);
 
       return (
-        <div style={{ minHeight: "100vh", color: "#c9d1d9", fontFamily: "sans-serif", maxWidth: 480, margin: "0 auto", paddingBottom: "80px", position: "relative" }}>
+        <div className="app-container">
+          {/* RESPONSIVE CSS INJECTED HERE */}
           <style>{` 
-            button{font-family:inherit;} 
+            button { font-family: inherit; } 
             input[type=number]::-webkit-inner-spin-button, 
             input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+            
+            /* Mobile First Styles */
+            .app-container {
+              min-height: 100vh;
+              color: #c9d1d9;
+              font-family: sans-serif;
+              max-width: 480px;
+              margin: 0 auto;
+              padding-bottom: 80px;
+              position: relative;
+            }
+            .bottom-nav {
+              position: fixed;
+              bottom: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 100%;
+              max-width: 480px;
+              padding: 12px;
+              background: #08080f;
+              border-top: 1px solid #14141f;
+              display: flex;
+              justify-content: center;
+              gap: 12px;
+              z-index: 10;
+            }
+            .exercise-image {
+              width: 100%;
+              height: 200px;
+              object-fit: contain;
+              border-radius: 8px;
+              margin-bottom: 10px;
+              background: #141420;
+              padding: 8px;
+              box-sizing: border-box;
+            }
+
+            /* Desktop / Wide Screen Overrides */
+            @media (min-width: 768px) {
+              .app-container {
+                max-width: 700px; /* Wider container for PC */
+              }
+              .bottom-nav {
+                max-width: 700px; /* Match navigation to container width */
+              }
+              .exercise-image {
+                height: 350px; /* Much larger images for PC */
+              }
+            }
           `}</style>
 
           {/* ═══ HOME SCREEN (SETUP) ═══ */}
@@ -304,7 +351,7 @@
 
                 {/* Q3: PAIN LOCATION (Conditional) */}
                 {hasPain && (
-                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28", animation: "fadeIn 0.3s ease" }}>
+                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28" }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
                     <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                       <button onClick={() => setPainLocation('neck')} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", color: painLocation === 'neck' ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Αυχένας</button>
@@ -355,7 +402,7 @@
                       <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 4, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                     </div>
                     
-                    <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "10px", border: `1px solid ${isDone ? "#1a1a28" : accent + "40"}`, background: "#141420", padding: "8px", boxSizing: "border-box", opacity: isDone ? 0.5 : 1 }} />
+                    <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${isDone ? "#1a1a28" : accent + "40"}`, opacity: isDone ? 0.5 : 1 }} />
                     <div style={{ fontSize: 13, color: isDone ? "#4b5563" : "#9ca3af", lineHeight: 1.5, marginBottom: "12px" }}>{ex.instruction}</div>
                     
                     {isDone ? (
@@ -399,7 +446,7 @@
                     <span style={{ fontSize: 11, fontWeight: 800, padding: "4px 8px", borderRadius: 6, backgroundColor: "#141420", color: "#9ca3af" }}>{ex.reps}</span>
                   </div>
                   
-                  <img src={ex.image} alt={ex.name} style={{ width: "100%", height: "200px", objectFit: "contain", borderRadius: "8px", marginBottom: "12px", border: `1px solid ${accent}40`, background: "#141420", padding: "8px", boxSizing: "border-box" }} />
+                  <img className="exercise-image" src={ex.image} alt={ex.name} style={{ border: `1px solid ${accent}40` }} />
                   <div style={{ fontSize: 13, color: "#9ca3af", lineHeight: 1.5, marginBottom: 8 }}>{ex.instruction}</div>
                   <div style={{ fontSize: 11, color: "#6b7280", fontStyle: "italic" }}>{ex.evidence}</div>
                 </div>
@@ -409,7 +456,7 @@
 
           {/* ═══ BOTTOM NAV ═══ */}
           {(screen === "home" || screen === "exercises") && (
-            <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, padding: "12px", background: "#08080f", borderTop: "1px solid #14141f", display: "flex", justifyContent: "center", gap: 12, zIndex: 10 }}>
+            <div className="bottom-nav">
               <button onClick={() => setScreen("home")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "home" ? `${accent}15` : "transparent", color: screen === "home" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>🏠 Αρχική</button>
               <button onClick={() => setScreen("exercises")} style={{ padding: "10px 24px", borderRadius: 12, border: "none", backgroundColor: screen === "exercises" ? `${accent}15` : "transparent", color: screen === "exercises" ? accent : "#4b5563", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>📖 Ασκήσεις</button>
             </div>
