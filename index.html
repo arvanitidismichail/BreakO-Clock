@@ -82,7 +82,7 @@
         bodyArea: "back", 
         instruction: "Καθίστε στην καρέκλα. Τραβήξτε απαλά τον αφαλό προς τα μέσα και γείρετε αργά τη λεκάνη προς τα εμπρός. Μείνετε για 2-3 δευτ. και μετά γείρετε προς τα πίσω.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
-        image: "./Pelvic-tilt.png" 
+        image: "./Pelvic-tilt.jpg" 
       },
       { 
         id: "trunk-rotation", 
@@ -91,7 +91,7 @@
         bodyArea: "back", 
         instruction: "Σταυρώστε τα χέρια σας πάνω από το στήθος. Στρίψτε τη σπονδυλική σας στήλη προς τη μία πλευρά όσο το επιτρέπει η άνεσή σας. Επιστρέψτε και επαναλάβετε.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
-        image: "./Trunk-rotation.png" 
+        image: "./Trunk-rotation.jpg" 
       },
       { 
         id: "side-bending", 
@@ -100,7 +100,7 @@
         bodyArea: "back", 
         instruction: "Σταθείτε όρθιοι. Το ένα χέρι τοποθετείται στη μέση, ενώ το άλλο ανεβαίνει πάνω από το κεφάλι και τεντώνεται προς την αντίθετη κατεύθυνση.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά και προς τις δύο πλευρές.", 
-        image: "./Side-bending-trunk.png" 
+        image: "./Side-bending-trunk.jpg" 
       },
       { 
         id: "trunk-ext", 
@@ -109,7 +109,7 @@
         bodyArea: "back", 
         instruction: "Σταθείτε όρθιοι και εκτείνετε τη σπονδυλική σας στήλη κάνοντας μια μικρή καμπύλη προς τα πίσω. Τα χέρια στη μέση για στήριξη.", 
         evidence: "Εκτελέστε 5 φορές καθημερινά.", 
-        image: "./Trunk-extension.png" 
+        image: "./Trunk-extension.jpg" 
       }
     ];
 
@@ -246,7 +246,6 @@
 
       return (
         <div className="app-container">
-          {/* RESPONSIVE CSS INJECTED HERE */}
           <style>{` 
             button { font-family: inherit; } 
             input[type=number]::-webkit-inner-spin-button, 
@@ -291,13 +290,13 @@
             /* Desktop / Wide Screen Overrides */
             @media (min-width: 768px) {
               .app-container {
-                max-width: 700px; /* Wider container for PC */
+                max-width: 700px; 
               }
               .bottom-nav {
-                max-width: 700px; /* Match navigation to container width */
+                max-width: 700px; 
               }
               .exercise-image {
-                height: 350px; /* Much larger images for PC */
+                height: 350px; 
               }
             }
           `}</style>
@@ -349,13 +348,40 @@
                   <button onClick={() => { setHasPain(false); setPainLocation(null); }} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${hasPain === false ? accent : "#1a1a28"}`, backgroundColor: hasPain === false ? `${accent}15` : "#141420", color: hasPain === false ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Όχι</button>
                 </div>
 
-                {/* Q3: PAIN LOCATION (Conditional) */}
+                {/* Q3: PAIN LOCATION (Conditional with Images!) */}
                 {hasPain && (
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #1a1a28" }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 12, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9", marginBottom: 16, textAlign: "center" }}>Πού εντοπίζεται ο πόνος;</div>
                     <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-                      <button onClick={() => setPainLocation('neck')} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", color: painLocation === 'neck' ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Αυχένας</button>
-                      <button onClick={() => setPainLocation('back')} style={{ flex: 1, padding: "12px", borderRadius: 12, border: `2px solid ${painLocation === 'back' ? accent : "#1a1a28"}`, backgroundColor: painLocation === 'back' ? `${accent}15` : "#141420", color: painLocation === 'back' ? accent : "#9ca3af", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Μέση</button>
+                      
+                      {/* Neck Selection Card */}
+                      <button onClick={() => setPainLocation('neck')} style={{ 
+                        flex: 1, padding: "16px", borderRadius: 12, 
+                        border: `2px solid ${painLocation === 'neck' ? accent : "#1a1a28"}`, 
+                        backgroundColor: painLocation === 'neck' ? `${accent}15` : "#141420", 
+                        color: painLocation === 'neck' ? accent : "#9ca3af", 
+                        fontSize: 14, fontWeight: 700, cursor: "pointer",
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
+                        transition: "all 0.2s"
+                      }}>
+                        <img src="./officeFemale.jpg" alt="Πόνος στον Αυχένα" style={{ width: "70px", height: "70px", borderRadius: "8px", objectFit: "cover", backgroundColor: "#fff" }} />
+                        <span>Αυχένας</span>
+                      </button>
+
+                      {/* Back Selection Card */}
+                      <button onClick={() => setPainLocation('back')} style={{ 
+                        flex: 1, padding: "16px", borderRadius: 12, 
+                        border: `2px solid ${painLocation === 'back' ? accent : "#1a1a28"}`, 
+                        backgroundColor: painLocation === 'back' ? `${accent}15` : "#141420", 
+                        color: painLocation === 'back' ? accent : "#9ca3af", 
+                        fontSize: 14, fontWeight: 700, cursor: "pointer",
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
+                        transition: "all 0.2s"
+                      }}>
+                        <img src="./officeMale.jpg" alt="Πόνος στη Μέση" style={{ width: "70px", height: "70px", borderRadius: "8px", objectFit: "cover", backgroundColor: "#fff" }} />
+                        <span>Μέση</span>
+                      </button>
+                      
                     </div>
                   </div>
                 )}
